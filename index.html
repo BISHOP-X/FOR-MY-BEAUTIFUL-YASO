@@ -14,15 +14,17 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(to top right, #ff9a9e, #fad0c4);
+            background: url('https://c4.wallpaperflare.com/wallpaper/5/256/850/5bd0382a8d1ef-wallpaper-preview.jpg') no-repeat center center; /* Background image */
+            background-size: cover;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
             text-align: center;
             padding: 20px;
+            position: relative;
         }
 
-        .message {
-            font-size: 2.5em;
+        .message, .final-message {
+            font-size: 2em;
             color: #fff;
             text-transform: uppercase;
             opacity: 0;
@@ -33,8 +35,8 @@
         }
 
         .flirty {
-            font-family: 'Playfair Display', serif; /* Romantic, non-curvy font */
-            font-size: 2.8em;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
             color: #fff;
         }
 
@@ -62,7 +64,7 @@
         .button {
             background-color: #f76c6c;
             color: white;
-            padding: 15px 30px;
+            padding: 10px 20px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
@@ -76,35 +78,34 @@
 
         .gif-left, .gif-right {
             position: absolute;
-            width: 100px;
+            width: 80px;
             height: auto;
         }
 
         .gif-left {
             left: 10px;
-            top: 60%;
+            top: 50%;
         }
 
         .gif-right {
             right: 10px;
-            top: 60%;
+            top: 50%;
         }
 
         /* Floating hearts */
         .heart {
             position: absolute;
-            width: 50px; /* Increase the heart size */
+            width: 50px;
             height: 50px;
             background-color: pink;
             transform: rotate(45deg);
-            animation: floatUp 8s infinite ease-in;
         }
 
         .heart::before,
         .heart::after {
             content: '';
             position: absolute;
-            width: 50px; /* Match the heart size */
+            width: 50px;
             height: 50px;
             background-color: pink;
             border-radius: 50%;
@@ -136,17 +137,25 @@
             }
         }
 
+        .heart {
+            animation: floatUp 8s infinite ease-in;
+        }
+
         /* Final text for the last page */
         .final-message {
             font-family: 'Poppins', sans-serif;
-            font-size: 2.5em;
+            font-size: 2em;
             color: white;
             margin-top: 30px;
+            visibility: hidden;
         }
 
-        /* Customize font size for smaller screens */
         @media (max-width: 600px) {
             .message {
+                font-size: 1.5em;
+            }
+
+            .flirty {
                 font-size: 1.8em;
             }
 
@@ -155,7 +164,22 @@
             }
 
             .gif-left, .gif-right {
-                width: 70px;
+                width: 60px;
+            }
+
+            .heart {
+                width: 30px;
+                height: 30px;
+            }
+
+            .heart::before,
+            .heart::after {
+                width: 30px;
+                height: 30px;
+            }
+
+            .final-message {
+                font-size: 1.8em;
             }
         }
     </style>
@@ -195,6 +219,9 @@
         <button class="button" id="noButton" onclick="showSike()">NO 😢</button>
     </div>
 
+    <!-- Final message -->
+    <div class="final-message" id="finalMessage">THIS IS THE END, GO BACK TO DISCORD AND TELL ME WHAT YOU THINK 😊</div>
+
     <!-- Audio for button click sound -->
     <audio id="clickSound" src="https://www.soundjay.com/button/sounds/button-3.mp3" preload="auto"></audio>
 
@@ -213,22 +240,34 @@
         ];
 
         const leftGifs = [
-            'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExanB3cHhtOGkyYndyMGcxZGEwOTF3bHRzMGNjYm85anRjMXczb21keCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1HpGQbayrb1g5szUNH/giphy.gif', 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2k5Z3hhbml5d3VkM212c2Z0M3Z1NnMxd3RydTNzY25lNDhoZnFzNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DXsNXjpBUomgYQXCiG/giphy.gif', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ213a2E0MHA1NHFsZjgxZzhsMjFtZjFtOTE5bnU0YnpsbXJjd3E2NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/RxEw1uF3W8DSlGxmur/giphy.gif', 
-            'https://media.giphy.com/media/W6QFPhpXJ7mQqbLrzX/giphy.gif?cid=790b76117hiqgruf357b6oxiaa5s9vj4kr1z8j84vmorfb1d&ep=v1_gifs_search&rid=giphy.gif&ct=g', 'https://media.giphy.com/media/0voVmkzV7YsSg7oh43/giphy.gif?cid=790b7611aos2blou2zp1xfa2iwi38nhr3r61rjuwao1mu018&ep=v1_gifs_search&rid=giphy.gif&ct=g', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3p6YWs1YTM1dnNqNDc0ZGNweGZ3aTA5cjFsenN2ajNhYmFvOXc1NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LTcau7EnQLhHkxxG2u/giphy.gif', 
-            'https://media.giphy.com/media/qpCvOBBmBkble/giphy.gif?cid=790b76110vzg4nh8tslov7c7skn5zzzd11r659qyrcrbtdpi&ep=v1_gifs_search&rid=giphy.gif&ct=g', 'https://media.giphy.com/media/mZwyH37L7ZDLq/giphy.gif?cid=790b7611ngzis177esui6oxex7mgu6ewzr69fslk4dqm6cnu&ep=v1_gifs_search&rid=giphy.gif&ct=g', 'https://media.giphy.com/media/1Lh4cwqMZaYJ5ULS46/giphy.gif?cid=790b7611oumhdk90u7tgpcfcofjl1paddk7yhvoexy41l99n&ep=v1_gifs_search&rid=giphy.gif&ct=g', 
-            'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGE5aGtqaTJsZHA4b3dtbGhud25kcnhmdXRpNzVnM2l4cm1yMnB0biZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l2SpQY5R0aYNZqxna/giphy.gif'
+            'https://i.giphy.com/media/1HpGQbayrb1g5szUNH/giphy.gif',
+            'https://i.giphy.com/media/DXsNXjpBUomgYQXCiG/giphy.gif',
+            'https://media.giphy.com/media/RxEw1uF3W8DSlGxmur/giphy.gif',
+            'https://media.giphy.com/media/W6QFPhpXJ7mQqbLrzX/giphy.gif',
+            'https://media.giphy.com/media/0voVmkzV7YsSg7oh43/giphy.gif',
+            'https://media.giphy.com/media/LTcau7EnQLhHkxxG2u/giphy.gif',
+            'https://media.giphy.com/media/qpCvOBBmBkble/giphy.gif',
+            'https://media.giphy.com/media/mZwyH37L7ZDLq/giphy.gif',
+            'https://media.giphy.com/media/1Lh4cwqMZaYJ5ULS46/giphy.gif',
+            'https://media.giphy.com/media/l2SpQY5R0aYNZqxna/giphy.gif'
         ];
 
         const rightGifs = [
-            'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExanB3cHhtOGkyYndyMGcxZGEwOTF3bHRzMGNjYm85anRjMXczb21keCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1HpGQbayrb1g5szUNH/giphy.gif', 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2k5Z3hhbml5d3VkM212c2Z0M3Z1NnMxd3RydTNzY25lNDhoZnFzNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DXsNXjpBUomgYQXCiG/giphy.gif', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ213a2E0MHA1NHFsZjgxZzhsMjFtZjFtOTE5bnU0YnpsbXJjd3E2NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/RxEw1uF3W8DSlGxmur/giphy.gif', 
-            'https://media.giphy.com/media/W6QFPhpXJ7mQqbLrzX/giphy.gif?cid=790b76117hiqgruf357b6oxiaa5s9vj4kr1z8j84vmorfb1d&ep=v1_gifs_search&rid=giphy.gif&ct=g', 'https://media.giphy.com/media/0voVmkzV7YsSg7oh43/giphy.gif?cid=790b7611aos2blou2zp1xfa2iwi38nhr3r61rjuwao1mu018&ep=v1_gifs_search&rid=giphy.gif&ct=g', 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3p6YWs1YTM1dnNqNDc0ZGNweGZ3aTA5cjFsenN2ajNhYmFvOXc1NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/LTcau7EnQLhHkxxG2u/giphy.gif', 
-            'https://media.giphy.com/media/qpCvOBBmBkble/giphy.gif?cid=790b76110vzg4nh8tslov7c7skn5zzzd11r659qyrcrbtdpi&ep=v1_gifs_search&rid=giphy.gif&ct=g', 'https://media.giphy.com/media/mZwyH37L7ZDLq/giphy.gif?cid=790b7611ngzis177esui6oxex7mgu6ewzr69fslk4dqm6cnu&ep=v1_gifs_search&rid=giphy.gif&ct=g', 'https://media.giphy.com/media/1Lh4cwqMZaYJ5ULS46/giphy.gif?cid=790b7611oumhdk90u7tgpcfcofjl1paddk7yhvoexy41l99n&ep=v1_gifs_search&rid=giphy.gif&ct=g', 
-            'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGE5aGtqaTJsZHA4b3dtbGhud25kcnhmdXRpNzVnM2l4cm1yMnB0biZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l2SpQY5R0aYNZqxna/giphy.gif'
+            'https://i.giphy.com/media/1HpGQbayrb1g5szUNH/giphy.gif',
+            'https://i.giphy.com/media/DXsNXjpBUomgYQXCiG/giphy.gif',
+            'https://media.giphy.com/media/RxEw1uF3W8DSlGxmur/giphy.gif',
+            'https://media.giphy.com/media/W6QFPhpXJ7mQqbLrzX/giphy.gif',
+            'https://media.giphy.com/media/0voVmkzV7YsSg7oh43/giphy.gif',
+            'https://media.giphy.com/media/LTcau7EnQLhHkxxG2u/giphy.gif',
+            'https://media.giphy.com/media/qpCvOBBmBkble/giphy.gif',
+            'https://media.giphy.com/media/mZwyH37L7ZDLq/giphy.gif',
+            'https://media.giphy.com/media/1Lh4cwqMZaYJ5ULS46/giphy.gif',
+            'https://media.giphy.com/media/l2SpQY5R0aYNZqxna/giphy.gif'
         ];
 
         let currentMessage = 0;
         let letterIndex = 0;
-        const typingSpeed = 100; // Speed of letter-by-letter appearance
+        const typingSpeed = 100;
 
         // Function to display the message letter by letter
         function displayMessage() {
@@ -239,16 +278,15 @@
             document.getElementById('leftGif').src = leftGifs[currentMessage];
             document.getElementById('rightGif').src = rightGifs[currentMessage];
 
-            messageDiv.innerHTML = ''; // Clear the previous text
-            messageDiv.style.visibility = 'visible'; // Show the message
+            messageDiv.innerHTML = '';
+            messageDiv.style.visibility = 'visible';
 
             function typeLetter() {
                 if (letterIndex < currentText.length) {
                     messageDiv.innerHTML += currentText[letterIndex];
                     letterIndex++;
-                    setTimeout(typeLetter, typingSpeed); // Delay between each letter
+                    setTimeout(typeLetter, typingSpeed);
                 } else {
-                    // Once the message is complete, show the small text and buttons
                     document.getElementById('proceedText').style.display = 'block';
                     document.getElementById('buttons').style.display = 'block';
                     document.getElementById('buttons').style.opacity = 1;
@@ -260,64 +298,52 @@
 
         // Function to proceed to the next message
         function proceed() {
-            playClickSound(); // Play click sound
-            // Hide buttons and small text
+            playClickSound(); 
             document.getElementById('buttons').style.opacity = 0;
             document.getElementById('proceedText').style.display = 'none';
             setTimeout(() => {
                 document.getElementById('buttons').style.display = 'none';
             }, 500);
 
-            // Clear the current message
             const messageDiv = document.getElementById(`message${currentMessage + 1}`);
             messageDiv.classList.remove('active');
             messageDiv.textContent = '';
 
-            // Move to the next message
             currentMessage++;
             letterIndex = 0;
 
             if (currentMessage < messages.length) {
                 const nextMessageDiv = document.getElementById(`message${currentMessage + 1}`);
                 nextMessageDiv.classList.add('active');
-                setTimeout(displayMessage, 500); // Show next message letter by letter
+                setTimeout(displayMessage, 500);
             } else {
-                // On the last page, clear everything and show the final message
                 clearPage();
             }
         }
 
-        // Function to clear all content except background and hearts, then show the final message
+        // Function to hide previous content and show final message
         function clearPage() {
-            document.body.innerHTML = ''; // Clear all content
-            document.body.style.background = 'linear-gradient(to top right, #ff9a9e, #fad0c4)'; // Keep background color
-            document.body.style.position = 'relative'; // Retain floating hearts
-            // Add floating hearts back
-            document.body.innerHTML += `<div class="heart" style="left: 20%; animation-delay: 1s;"></div>
-                <div class="heart" style="left: 40%; animation-delay: 2s;"></div>
-                <div class="heart" style="left: 60%; animation-delay: 3s;"></div>
-                <div class="heart" style="left: 80%; animation-delay: 4s;"></div>`;
-            // Add final message
-            document.body.innerHTML += '<div class="final-message">THIS IS THE END, GO BACK TO DISCORD AND TELL ME WHAT YOU THINK 😊</div>';
+            const allContent = document.querySelectorAll('.heart, .message, .gif-left, .gif-right');
+            allContent.forEach(item => item.style.display = 'none'); // Hide all previous content
+            const finalMessage = document.getElementById('finalMessage');
+            finalMessage.style.visibility = 'visible'; // Show final message
+            finalMessage.style.opacity = '1'; // Ensure it's fully visible
         }
 
-        // Show the "Sike" message when clicking No
         function showSike() {
-            playClickSound(); // Play click sound
+            playClickSound();
             const noButton = document.getElementById('noButton');
             noButton.textContent = "SIKE, YOU'RE NOT ALLOWED TO DO THIS! NOW CLICK THE RIGHT BUTTON 😉";
             noButton.disabled = true;
         }
 
-        // Play button click sound
         function playClickSound() {
             const clickSound = document.getElementById('clickSound');
             clickSound.play();
         }
 
-        // Start the first message letter by letter when the page loads
         window.onload = function () {
-            displayMessage(); // Ensure the text starts typing when the page loads
+            displayMessage();
         };
     </script>
 </body>
